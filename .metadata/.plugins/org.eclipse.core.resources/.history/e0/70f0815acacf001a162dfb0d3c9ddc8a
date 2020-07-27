@@ -1,0 +1,25 @@
+package com.java;
+
+import com.mongodb.DB;
+import com.mongodb.DBCollection;
+import com.mongodb.MongoClient;
+
+
+public class Database {
+	
+	static MongoClient mongo;
+	static DB db;
+	static DBCollection feeds;  
+	
+	public static void dbConnect() { 
+		mongo = new MongoClient("localhost", 27017);
+        db = mongo.getDB("AISHWARYA");
+	}
+	
+	public static DBCollection feedsCollection() { 
+		feeds = db.getCollection("FEED FILE");
+		return feeds;
+	}
+	
+	
+}

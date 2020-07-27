@@ -1,0 +1,21 @@
+package com.java;
+
+public class Validation
+{
+	public static  int test(Transaction t)
+	{
+	
+		int flag=0;
+		Parameters.statusflag=0;
+		Parameters.TRID (t.getTransactionRef(),12);
+		Parameters.date(t);
+		Parameters.PRNAME (t.getPayerName(),35);
+		Parameters.PRACC(t.getPayerAccount(),12);
+		Parameters.PNAME (t.getPayeeName(),35);
+		Parameters.PACC (t.getPayeeAccount(),12);
+		Parameters.AMT (t.getTransactionAmount());
+		flag=Parameters.test();
+		return flag;
+		
+	}
+}

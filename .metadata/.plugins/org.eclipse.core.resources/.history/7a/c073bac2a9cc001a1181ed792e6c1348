@@ -1,0 +1,184 @@
+package com.java;
+
+import java.io.*;
+import java.io.FileNotFoundException;
+import com.google.gson.Gson;
+import com.mongodb.BasicDBObject;
+import com.mongodb.DB;
+import com.mongodb.DBCollection;
+import com.mongodb.DBCursor;
+import com.mongodb.MongoClient;
+import com.mongodb.WriteResult;
+import au.com.bytecode.opencsv.CSVReader;
+
+class Transaction {
+	String TRID, DATE, PRNAME, PRACC, PNAME, PACC, AMT, ST;
+	/*
+	 * TRID=TRANSACTION REF ID-12 DATE=DATE DDMMYY-8 PRNAME=PAYERNAME-35 PRACC=PAYER
+	 * ACC NUMBER-12 PNAME=PAYEE NAME-35 PACC=PAYEE ACC NUMBER-12 AMT=AMOUNT -10,2;
+	 * ST=STATUS-PASS/FAIL,DEFAULT=NULL
+	 */
+
+	Transaction(String TRID, String DATE, String PRNAME, String PRACC, String PNAME, String PACC, String AMT) {
+		this.TRID = TRID;
+		this.DATE = DATE;
+		this.PRNAME = PRNAME;
+		this.PRACC = PRACC;
+		this.PNAME = PNAME;
+		this.PACC = PACC;
+		this.AMT = AMT;
+		this.ST = null;
+
+	}
+
+	public void display() {
+		System.out.println("TRID: " + TRID);
+		System.out.println("DATE: " + DATE);
+		System.out.println("PAYER NAME: " + PRNAME);
+		System.out.println("PAYER ACCNO: " + PRACC);
+		System.out.println("PAYEE NAME: " + PNAME);
+		System.out.println("PAYEE ACCNO: " + PACC);
+		System.out.println("AMOUNT: " + AMT);
+		System.out.println("----------------------------------------------");
+
+	}
+
+}
+
+class Record {
+	String TRID, DATE, AMT, ST;
+	String PAYER[] = new String[2];
+	String PAYEE[] = new String[2];
+
+}
+
+public class InputReading {
+	static MongoClient mongo;
+	static DB db;
+	static DBCollection collection1, collection2, collection3;
+
+	public static void main(String[] args) throws FileNotFoundException {
+		mongo = new MongoClient("localhost", 27017);
+		db = mongo.getDB("AISHWARYA");
+		System.out.println("Connection to MongoDB database successfully");
+		collection1 = db.createCollection("FEED FILE", null);
+		collection2 = db.createCollection("PASSED TRANSACTIONS", null);
+		collection3 = db.createCollection("FAILED TRANSACTIONS", null);
+		WriteResult result1 = collection1.remove(new BasicDBObject());
+		WriteResult result2 = collection2.remove(new BasicDBObject());
+		WriteResult result3 = collection3.remove(new BasicDBObject());
+		/*
+		 * System.out.println(result1.toString());
+		 * System.out.println(result2.toString());
+		 * System.out.println(result3.toString());
+		 */
+		String TRID, DATE, PRNAME, PRACC, PNAME, PACC, AMT;
+		
+		try {
+			
+
+			// Create an object of filereader
+			// class with CSV file as a parameter.
+			FileReader filereader = new FileReader("C:\\Users\\DELL\\Citibridge\\Feed\\src\\main\\resources\\SAMPLE INPUT FILE.csv");
+
+			// create csvReader object passing
+			// file reader as a parameter
+			CSVReader csvReader = new CSVReader(filereader);
+			String[] values;
+
+			// we are going to read data line by line
+			while ((values = csvReader.readNext()) != null) {
+				TRID = values[0];
+				DATE = values[1];
+				PRNAME = values[2];
+				PRACC = values[3];
+				PNAME = values[4];
+				PACC = values[5];
+				AMT = values[6];
+				Transaction t = new Transaction(TRID, DATE, PRNAME, PRACC, PNAME, PACC, AMT);
+				int flag = Validation.test(t);
+				System.out.println(flag);
+				// t.display();
+				InputReading.CollectionAllotment(t, flag);
+
+			}
+			csvReader.close();
+			InputReading.displaycollections();
+		}
+
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public static void CollectionAllotment(Transaction t, int flag) {
+		if (flag == 6) {
+			t.ST = "PASSED";
+			basicDBObject_Example(collection2, t);
+		} else {
+			t.ST = "FAILED";
+			basicDBObject_Example(collection3, t);
+		}
+
+	}
+
+	public static void basicDBObject_Example(DBCollection collection, Transaction t) {
+		Gson gson = new Gson();
+		Record r = new Record();
+		r.TRID = t.TRID;
+		r.DATE = t.DATE;
+		r.AMT = t.AMT;
+		r.PAYER[0] = t.PRACC;
+		r.PAYER[1] = t.PRNAME;
+		r.PAYEE[0] = t.PACC;
+		r.PAYEE[1] = t.PNAME;
+		// BasicDBObject obj = (BasicDBObject)JSON.parse(gson.toJson(t));
+		String json = gson.toJson(r);
+		// Parse to bson document and insert
+		BasicDBObject doc = BasicDBObject.parse(json);
+		String json1 = gson.toJson(t);
+		// Parse to bson document and insert
+		BasicDBObject doc1 = BasicDBObject.parse(json1);
+		System.out.println(doc);
+		collection.insert(doc1);
+		collection1.insert(doc);
+
+		/*
+		 * BasicDBObject document = new BasicDBObject(); document.put("TRID", t.TRID);
+		 * document.put("VD", t.DATE); document.put("PRNAME",t.PRNAME);
+		 * 
+		 * document.put("Pname",t.PNAME);
+		 * 
+		 * document.put("AMT", t.AMT);
+		 * 
+		 * //collection1.insert(document); System.out.println(document);
+		 * collection.insert(document);
+		 */
+	}
+
+	public static void displaycollections() {
+		DBCursor cursorObj = collection2.find();
+		System.out.println("___________________________________________________________");
+		System.out.println("PASSED TRANSACTIONS");
+		try {
+			while (cursorObj.hasNext()) {
+				System.out.println(cursorObj.next());
+			}
+		} finally {
+			cursorObj.close();
+		}
+
+		DBCursor cursorObj1 = collection3.find();
+		System.out.println("___________________________________________________________");
+		System.out.println("FAILED TRANSACTIONS");
+
+		try {
+			while (cursorObj1.hasNext()) {
+				System.out.println(cursorObj1.next());
+			}
+		} finally {
+			cursorObj1.close();
+		}
+	}
+
+}

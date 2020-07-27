@@ -1,0 +1,54 @@
+package com.java;
+
+
+
+
+
+public class Validation
+{
+	public static  int test(Transaction t)
+	{
+		int flag=0;
+		
+	System.out.println(t);
+	System.out.println("________________________________________");
+	if(Parameters.TRID (t))
+	{
+		flag++;
+		System.out.println(flag);
+	}
+	/*if(Parameters.date(t))
+	{
+		flag++;
+		System.out.println(flag);
+	}*/
+	if(Parameters.PRNAME (t))
+	{
+		flag++;
+		System.out.println(flag);
+	}
+	if(Parameters.PRACC(t))
+	{	flag++;
+	System.out.println(flag);
+	
+	}
+	if(Parameters.PNAME (t))
+	{	flag++;
+	System.out.println(flag);
+	
+	}
+	if(Parameters.PACC (t))
+	{	flag++;
+	System.out.println(flag);
+	
+	}
+	if(Parameters.AMT (t))
+	{	flag++;
+	System.out.println(flag);
+	}
+	return(flag);
+	
+	}	
+	
+
+}

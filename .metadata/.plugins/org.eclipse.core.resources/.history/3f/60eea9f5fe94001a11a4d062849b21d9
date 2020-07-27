@@ -1,0 +1,25 @@
+
+
+package com.java;
+
+
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+@RestController
+public class Controller {
+
+    @Autowired
+    private Repository transRepository;
+
+    @RequestMapping("/courses")
+    public List<Record> getCourses() {
+        return transRepository.findAll();
+    }
+
+  
+
+}
