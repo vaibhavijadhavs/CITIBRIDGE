@@ -1,4 +1,4 @@
-package com.java;
+package com.java.model;
 import java.io.*;
 
 
@@ -12,8 +12,6 @@ import com.mongodb.DBCursor;
 import com.mongodb.MongoClient;
 import com.mongodb.WriteResult;
 import au.com.bytecode.opencsv.CSVReader;
-import com.java.Transaction;
-import com.java.TransactionDate;
 
 public class InputReading 
 {
@@ -21,15 +19,8 @@ public class InputReading
 	static DB db;
 	static DBCollection feed,collection2,collection3;
 	
-	public static TransactionDate parseDate(String dateString) {
-		int day, month, year;
-		// Date Format DD/MM/YYYY thus 2,2,4 split of dateString
-		day = Integer.parseInt(dateString.substring(0, 2));
-		month = Integer.parseInt(dateString.substring(3, 5));
-		year = Integer.parseInt(dateString.substring(6, 10));
-		return (new TransactionDate(day, month, year));
-	}
-    public static void main(String[] args) throws FileNotFoundException 
+	
+    public static void mainApl() throws FileNotFoundException 
     {
     	 mongo = new MongoClient("localhost", 27017);
          
@@ -66,7 +57,7 @@ public class InputReading
                 AMT=values[6];
                 Transaction t=new Transaction();
              t.setTransactionRef(TRID);
-       		 t.setTransactionDate(parseDate(DATE));
+       		 t.setTransactionDate(DATE);
        		 t.setPayerName(PRNAME);
        		 t.setPayerAccount(PRACC);
        		 t.setPayeeName(PNAME);

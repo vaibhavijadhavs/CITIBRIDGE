@@ -1,6 +1,4 @@
-package com.java;
-import com.java.Transaction;
-import com.java.TransactionDate;
+package com.java.model;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -25,6 +23,14 @@ public class Parameters
 			}
 			return false;
 			
+		}
+		public TransactionDate parseDate(String dateString) {
+			int day, month, year;
+			// Date Format DD/MM/YYYY thus 2,2,4 split of dateString
+			day = Integer.parseInt(dateString.substring(0, 2));
+			month = Integer.parseInt(dateString.substring(3, 5));
+			year = Integer.parseInt(dateString.substring(6, 10));
+			return (new TransactionDate(day, month, year));
 		}
 	
 		public  boolean PRNAME(String PRNAME, int length) //check length of PAYER NAME
@@ -91,7 +97,8 @@ public class Parameters
 		public  boolean date(Transaction t) //check date
 		{
 			boolean f;
-			TransactionDate date=t.getTransactionDate();
+			String dateobj=t.getTransactionDate();
+			TransactionDate date=parseDate(dateobj);
 			f=checkDate(date);
 			if(f)
 			{

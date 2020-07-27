@@ -1,6 +1,8 @@
 package test;
 
 import com.java.*;
+import com.java.model.Parameters;
+
 import static org.junit.Assert.*;
 import org.junit.*;
 //import org.junit.Test;

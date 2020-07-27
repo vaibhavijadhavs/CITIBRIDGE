@@ -1,4 +1,5 @@
-package com.java;
+package com.java.controller;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.java.*;
-
+import com.java.model.Database;
 import com.mongodb.DBCursor;
 
 @CrossOrigin(origins = "http://localhost:4200")

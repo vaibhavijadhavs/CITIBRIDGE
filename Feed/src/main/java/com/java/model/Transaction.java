@@ -1,4 +1,4 @@
-package com.java;
+package com.java.model;
 
 import java.util.Date;
 
@@ -10,7 +10,7 @@ public class Transaction {
 	private String PACC;
 	private double AMT; // ?find the datatype signed|unsigned
 	private String ST;
-	private TransactionDate transactionDate;
+	private String transactionDate;
 	
 	
 	public String isFeedStatus() {
@@ -29,17 +29,17 @@ public class Transaction {
 		this.TRID = transactionRef;
 	}
 
-	public TransactionDate getTransactionDate() {
+	public String getTransactionDate() {
 		return transactionDate;
 	}
 
-	public void setTransactionDate(TransactionDate transactionDate) {
+	public void setTransactionDate(String transactionDate) {
 		this.transactionDate = transactionDate;
 	}
 
 	@Override
 	public String toString() {
-		return  TRID + " " + transactionDate.toString()
+		return  TRID + " " + transactionDate
 				+ " " + PRNAME + PRACC + " " + PNAME + PACC
 				+ " " + AMT + " " + ST +"\n";
 	}
